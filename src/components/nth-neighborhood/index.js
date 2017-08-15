@@ -3,6 +3,7 @@
 import uuid from 'node-uuid';
 import FastSet from 'collections/fast-set';
 import parallel from 'async/parallel';
+import each from 'async/each';
 
 var nth_neighborhood = function( api, transform, d3, config ) {
 
@@ -11,9 +12,12 @@ var nth_neighborhood = function( api, transform, d3, config ) {
     var input_n_id = 'inp__' + uuid.v4();
     var output_id = 'out__' + uuid.v4();
 
+    var DEBUG = false;
+
     var root, input_slug, input_n, output, errors;
 
     var slug = "the-father";
+
     var n = 2;
 
     function initial() {
@@ -28,7 +32,7 @@ var nth_neighborhood = function( api, transform, d3, config ) {
                         .on('change', function() {
                             slug = this.value;
                             get_root( slug, n, function( result ) { console.log( 'in [callback]: done.' ); console.log( result ); });
-                        } ); 
+                        } );
 
         input_n = root
                         .select('section#content')
@@ -79,31 +83,38 @@ var nth_neighborhood = function( api, transform, d3, config ) {
         get_channel(
             root,
             n,
-            {root: {slug: root, channel: {}}},
+            {
+                root: root,
+                channels: {},
+                blocks: new FastSet([], block_equal, block_hash)
+            },
             callback
         );
     }
-
-    var channel_rep = { slug: "", channel: {} };
-    var block_rep = { id: 0, block: {}, channels: [ channel_rep ]};
-
-    var data_rep = {
-        root: {slug: "", channel:{}},
-        blocks: [ block_rep ],
-        channels: [ channel_rep ]
-    };
 
 
 
     function get_channel( local_root, k, final_result, callback ) {
 
-        if ( k === 0 ) {
-            console.log('in [get_channel]: distance k = n = '+ n +' reached.');
+        console.log( 'level: %d; root: %s', n - k, local_root );
 
-            callback( final_result );
+        var visited = roots.has( local_root );
 
-        } else if ( roots.has( local_root ) ) {
-            console.log('in [get_channel]: local root \"'+ local_root +'\" in collection.');
+        if ( k === 0 && !visited ) {
+            if ( DEBUG ) console.log('in [get_channel]: distance k = n = '+ n +' reached.');
+
+            roots.add( local_root );
+
+            api .channel( local_root )
+                .then( function( response ) {
+
+                    final_result.channels[ local_root ] = response.data;
+                    callback( final_result );
+
+                } );
+
+        } else if ( visited ) {
+            if ( DEBUG ) console.log('in [get_channel]: local root \"'+ local_root +'\" in collection.');
 
             callback( final_result );
 
@@ -114,38 +125,64 @@ var nth_neighborhood = function( api, transform, d3, config ) {
                 root: function( next ) {
                     api .channel( local_root )
                         .then( function( response ) { next(null, response.data); } )
-                    //    .catch( function( error ) { next( error ); } );
+                        //.catch( next );
                 },
                 channels: function( next ) {
                     api .channel( local_root, 'channels' )
-                        .then( function( response ) { next(null, response.data); } )
-                        //.catch( function( error ) { next( error ); } );
+                        .then( function( response ) { next(null, response.data.channels ); } )
+                        //.catch( next );
                 }
             },
             function(err, results) {
-                if ( err ) { console.error( err ); }
-                console.log( results );
+                if ( err ) {
 
-                /** 1. Add the local root to the set of visited nodes */
-                roots.add( local_root );
+                    console.error( err );
 
-                /** 2. Update channels in final result, resolve blocks between channel and local_root */
+                } else {
 
+                    console.log( results );
 
-                /** 3. recursive step. */
-                results.channels.channels.forEach( function( channel_object ) {
-                    console.log('in [get_channel]: recursive call k = '+ (n - k) + ' for: \"'+ channel_object.channel.slug +'\".');
-                    get_channel( channel_object.channel.slug, k - 1, final_result, callback );
-                })
+                    /** 1. Add the local root to the set of visited nodes */
+                    roots.add( local_root );
 
+                    var relevant_channels = results.channels.filter( function( channel_object ) { return !roots.has( channel_object.channel.slug ); });
+
+                    /** 2. Update channels in final result, resolve blocks between channel and local_root */
+                    final_result.channels[ local_root ] = results.root;
+
+                    var root_set = new FastSet( results.root.contents, block_equal, block_hash );
+
+                    each(
+                        relevant_channels,
+                        function( channel_object, next ) {
+
+                            api .channel( channel_object.channel.slug )
+                                .then( function( response ) {
+
+                                    var intersection = new FastSet( response.data.contents ).filter( function( block ) { return root_set.has( block ); })
+
+                                    final_result.blocks = final_result.blocks.union( intersection );
+                                    get_channel( channel_object.channel.slug, k - 1, final_result, noop );
+
+                                    next();
+
+                                })
+                                .catch( next )
+
+                        },
+                        function( err ) {
+                            if ( err ) console.error( err );
+
+                            callback( final_result );
+
+                        }
+                     );
+
+                }
 
             });
 
         }
-
-    }
-
-    function get_shared_blocks( ch_A, ch_B ) {
 
     }
 
@@ -155,6 +192,10 @@ var nth_neighborhood = function( api, transform, d3, config ) {
 };
 
 
+var block_equal = function( a, b ) { return a.id === b.id; }
+var block_hash = function( a ) { return "" + a.id; }
+
+var noop = function() {};
 
 
 export { nth_neighborhood };
