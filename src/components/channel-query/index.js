@@ -1,7 +1,10 @@
 "use strict";
 
+import './style.scss';
+
 import uuid from 'node-uuid';
 import { render_channel_data } from './render-channel-data.js';
+import { render_error_data } from './render-error-data.js';
 
 /**
  * A channel query is a simple request to get information on a channel.
@@ -17,6 +20,7 @@ var channel_query = function( api, transform, d3, config ) {
     var owner = 'comp__' + uuid.v4();
 
     var input_ids = [ uuid.v4() ].map( function( id ) { return 'inp__' + id; });
+
     var output_ids = [ uuid.v4() ].map( function( id ) { return 'out__' + id; });
 
     var root, inputs, outputs, errors;
@@ -46,10 +50,10 @@ var channel_query = function( api, transform, d3, config ) {
             .enter()
             .append('div')
             .classed( owner, true )
-            .text( function(d) { return d.message; })
+            .text( function(d) { return d.message; });
 
-            .exit()
-            .remove();
+            // .exit()
+            // .remove();
 
     }
 
@@ -59,7 +63,7 @@ var channel_query = function( api, transform, d3, config ) {
 
         inputs = root
                     .select('section#content')
-                    .selectAll( ['input', '.', owner ].join('') );
+                    .selectAll( ['input', '.', owner ].join('') ); // input .comp__<uuid>
 
         outputs = root
                     .select('section#content')
@@ -143,11 +147,5 @@ var channel_query = function( api, transform, d3, config ) {
 
 };
 
-function render_error_data( element ) {
-
-    return element
-        .text( function(d) { return d.message; });
-
-}
 
 export { channel_query };
