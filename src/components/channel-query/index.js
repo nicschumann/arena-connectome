@@ -19,21 +19,12 @@ var channel_query = function( api, transform, d3, config ) {
     var input_ids = [ uuid.v4() ].map( function( id ) { return 'inp__' + id; });
     var output_ids = [ uuid.v4() ].map( function( id ) { return 'out__' + id; });
 
-    var root = d3.select('main#root');
+    var root, inputs, outputs, errors;
 
-    var inputs = root
-                .select('section#content')
-                .selectAll( ['input', '.', owner ].join('') );
-
-    var outputs = root
-                .select('section#content')
-                .selectAll( ['ul', '.', owner ].join('') );
-
-    var errors = root
-                .select( 'section#errors' )
-                .selectAll( ['div', '.', owner ].join('') );
 
     function initial() {
+
+        update_selections();
 
         inputs
             .data( input_ids )
@@ -59,6 +50,24 @@ var channel_query = function( api, transform, d3, config ) {
 
             .exit()
             .remove();
+
+    }
+
+    function update_selections() {
+
+        root = d3.select('main#root');
+
+        inputs = root
+                    .select('section#content')
+                    .selectAll( ['input', '.', owner ].join('') );
+
+        outputs = root
+                    .select('section#content')
+                    .selectAll( ['ul', '.', owner ].join('') );
+
+        errors = root
+                    .select( 'section#errors' )
+                    .selectAll( ['div', '.', owner ].join('') );
 
     }
 
