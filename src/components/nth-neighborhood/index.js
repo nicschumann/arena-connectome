@@ -1,13 +1,74 @@
 "use strict";
 
+import uuid from 'node-uuid';
 import FastSet from 'collections/fast-set';
 import parallel from 'async/parallel';
 
 var nth_neighborhood = function( api, transform, d3, config ) {
 
+    var owner = 'comp__' + uuid.v4();
+    var input_slug_id = 'inp__' + uuid.v4();
+    var input_n_id = 'inp__' + uuid.v4();
+    var output_id = 'out__' + uuid.v4();
 
-    var slug = "statements";
+    var root, input_slug, input_n, output, errors;
+
+    var slug = "the-father";
     var n = 2;
+
+    function initial() {
+
+        update_selections();
+
+        input_slug = root
+                        .select('section#content')
+                        .append('input')
+                        .classed( owner, true )
+                        .attr('id', input_slug_id)
+                        .on('change', function() {
+                            slug = this.value;
+                            get_root( slug, n, function( result ) { console.log( 'in [callback]: done.' ); console.log( result ); });
+                        } ); 
+
+        input_n = root
+                        .select('section#content')
+                        .append('input')
+                        .classed( owner, true )
+                        .attr('id', input_n_id)
+                        .on('change', function() {
+                            n = this.value;
+                            get_root( slug, n, function( result ) { console.log( 'in [callback]: done.' ); console.log( result ); });
+                        } );
+
+        // output
+        //     .data( output_ids )
+        //     .enter()
+        //     .append( 'ul' )
+        //     .classed( owner, true )
+        //     .attr( 'id', function( d ) { return d; } );
+
+        errors
+            .data([])
+            .enter()
+            .append('div')
+            .classed( owner, true )
+            .text( function(d) { return d.message; });
+
+    }
+
+    function update_selections() {
+
+        root = d3.select('main#root');
+
+        output = root
+                    .select('section#content');
+                    /** TODO: hook this up to force graph */
+
+        errors = root
+                    .select( 'section#errors' )
+                    .selectAll( ['div', '.', owner ].join('') );
+
+    }
     /**
      * Contains the set of slugs of channels that have been roots in the get_channel routine.
      *
@@ -88,7 +149,7 @@ var nth_neighborhood = function( api, transform, d3, config ) {
 
     }
 
-
+    initial();
     get_root( slug, n, function( result ) { console.log( 'in [callback]: done.' ); console.log( result ); });
 
 };
