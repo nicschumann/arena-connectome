@@ -1,0 +1,31 @@
+{
+  "predef": {
+    "setImmediate": false
+  },
+  "asi": true,
+  "boss": true,
+  "debug": true,
+  "evil": true,
+  "curly": false,
+  "eqnull": true,
+  "es5": true,
+  "esnext": true,
+  "expr": true,
+  "laxbreak": true,
+  "laxcomma": true,
+  "loopfunc": true,
+  "regexdash": true,
+  "browser": true,
+  "wsh": true,
+  "trailing": true,
+  "sub": true,
+  "smarttabs": true,
+  "supernew": true,
+  "newcap": false,
+  "proto": true,
+  "undef": true,
+  "unused": "vars",
+  "onevar": true,
+  "validthis": true,
+  "node": true
+}

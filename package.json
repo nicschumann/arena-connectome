@@ -1,0 +1,45 @@
+{
+  "name": "arena-connectome",
+  "version": "0.0.1",
+  "description": "A graph structure and visualization tool for the are.na platform.",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --inline --content-base ./dist",
+    "watch": "webpack --config webpack.config.js --watch",
+    "build": "webpack --config webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nicschumann/arena-connectome.git"
+  },
+  "keywords": [
+    "graph",
+    "visualization",
+    "are.na",
+    "d3",
+    "analysis",
+    "graph-structure"
+  ],
+  "author": "nicschumann",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nicschumann/arena-connectome/issues"
+  },
+  "homepage": "https://github.com/nicschumann/arena-connectome#readme",
+  "devDependencies": {
+    "css-loader": "^0.28.4",
+    "node-sass": "^4.5.3",
+    "resolve-url-loader": "^2.1.0",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.18.2",
+    "webpack": "^3.5.3",
+    "webpack-dev-server": "^2.7.1"
+  },
+  "dependencies": {
+    "axios": "^0.16.2",
+    "d3": "^4.10.0",
+    "markdown": "^0.5.0",
+    "node-uuid": "^1.4.8"
+  },
+  "arena_api": "http://api.are.na/v2"
+}
