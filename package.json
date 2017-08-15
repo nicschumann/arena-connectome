@@ -33,10 +33,13 @@
     "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2",
     "webpack": "^3.5.3",
-    "webpack-dev-server": "^2.7.1"
+    "webpack-dev-server": "^2.7.1",
+    "worker-loader": "^0.8.1"
   },
   "dependencies": {
+    "async": "^2.5.0",
     "axios": "^0.16.2",
+    "collections": "^5.0.7",
     "d3": "^4.10.0",
     "markdown": "^0.5.0",
     "node-uuid": "^1.4.8"
