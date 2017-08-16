@@ -2,7 +2,11 @@
 
 ## What?
 
-Connectome is a tool for exploring the shape of connections between Are.na channels.
+Connectome is a tool for exploring the shape of connections between Are.na channels. We're building a number of different *components* which help with different visualization tasks or goals. Currently, we're working
+
+## Who
+
+Connectome is being developed by [Nic Schumann](http://workshop.co) ([nicschumann](http://github.com/nicschumann)) and [Lukas WP](http://ltwp.net) ([ltwp](http://github.com/ltwp)).
 
 ## Components
 
@@ -18,13 +22,15 @@ Our primary goal is to provide interesting tools for visualizing patterns of con
 
 1. A channel **A** is said to *contain* a channel **B** if **B** appears as content in **A**'s content list. We represent the fact that **A** contains **B** by drawing a directed edge from the node representing **B** to the node representing **A**.
 
-2. A channel **A** is said to be *inset into* a channel **B** if **A** appears as content in **B**'s content list. We represent the fact that **A** is inset into **B** by drawing a directed edge from the node representing **A** to the node representing **B**. Notice that **A** is inset into **B** exactly when **B** contains **A**.
+2. A channel **A** is said to be *inset into* a channel **B** if **A** appears as content in **B**'s content list. We represent the fact that **A** is inset into **B** by drawing a directed edge from the node representing **A** to the node representing **B**. 
 
-3. A channel **A** is said to be *block-connected* to a channel **B** if **A** and **B** share a block **x** in common. In this case, we draw an undirected edge between **A** and **B** labelled with **x**.
+3. Notice that **A** is inset into **B** exactly when **B** contains **A**.
 
-These are the only types of channel connections we recognize. In a future iteration we may want to consider adding connections between channels that share blocks with the same URL. In these case, we could say that channels **A** and **B** are *weakly block-connected*.
+4. A channel **A** is said to be *block-connected* to a channel **B** if **A** and **B** share a block **x** in common. In this case, we draw an undirected edge between **A** and **B** labelled with **x**.
 
-We define an *n-neighborhood* around a channel **A** as follows:
+5. In a future iteration we may want to consider adding connections between channels that share blocks with the same URL. In these case, we could say that channels **A** and **B** are *weakly block-connected*.
+
+Now that our notions of connectedness are defined, We define an *n-neighborhood* around a channel **A** as follows:
 
 1. The *0-neighborhood* around **A** is simply the channel **A** itself.
 
