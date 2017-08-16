@@ -11,7 +11,9 @@ var arena = function( config ) {
             url: path.join( root, slug, action ),
             method: 'get',
             responseType: 'json',
-            baseURL: config.arena_api
+            baseURL: config.arena_api,
+            cache: false,
+            params: { noCache: true }
         });
     }
 
