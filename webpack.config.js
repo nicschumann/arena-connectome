@@ -10,23 +10,32 @@ module.exports = {
     },
     devtool: "source-map",
     module: {
-        rules: [{
-            test: /\.scss$/,
-            use: [{
-                loader: "style-loader"
-            }, {
-                loader: "css-loader", options: {
-                    sourceMap: true
-                }
-            }, {
-                loader: "resolve-url-loader", options: {
-                    sourceMap: true
-                }
-            }, {
-                loader: "sass-loader", options: {
-                    sourceMap: true
-                }
-            }]
-        }]
+        rules: [
+            {
+                test: /\.scss$/,
+                use: [{
+                    loader: "style-loader"
+                }, {
+                    loader: "css-loader", options: {
+                        sourceMap: true
+                    }
+                }, {
+                    loader: "resolve-url-loader", options: {
+                        sourceMap: true
+                    }
+                }, {
+                    loader: "sass-loader", options: {
+                        sourceMap: true
+                    }
+                }]
+            },
+            // {
+            //     test: /\.js$/,
+            //     include: [
+            //         path.resolve(__dirname, 'src')
+            //     ],
+            //     use: [ {loader: 'babel-loader'} ]
+            // }
+        ]
     }
 };
