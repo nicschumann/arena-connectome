@@ -1,0 +1,21 @@
+@import './parameters.scss';
+
+.graph {
+    g.nodes {
+
+        .node {
+            fill: $node-base-color;
+            z-index: 1000;
+        }
+
+    }
+
+    g.edges {
+
+        .edge {
+            stroke: $edge-base-color;
+            z-index: 500;
+        }
+
+    }
+}
