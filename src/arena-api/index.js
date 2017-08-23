@@ -3,30 +3,34 @@
 import path from 'path';
 
 import axios from 'axios';
+import axiosRetry from 'axios-retry';
 
 var arena = function( config ) {
 
-    function makeRequest( config, root, slug, action ) {
-        return axios({
-            url: path.join( root, slug, action ),
-            method: 'get',
-            responseType: 'json',
-            baseURL: config.arena_api,
-            cache: false,
-            params: { noCache: true }
-        });
+    var client = axios.create({
+        responseType: 'json',
+        baseURL: config.arena_api,
+    //    params: { noCache: true },
+    });
+
+    axiosRetry( client, { retries: 3 });
+
+    function makeRequest( root, slug, action ) {
+
+        return client.get( path.join( root, slug, action ) );
+
     }
 
     return {
         channel: function( slug, action ) {
 
-            return makeRequest( config, 'channels', slug || '', action || '');
+            return makeRequest( 'channels', slug || '', action || '');
 
         },
 
         block: function( slug, action ) {
 
-            return makeRequest( config, 'blocks', slug || '', action || '');
+            return makeRequest( 'blocks', slug || '', action || '');
 
         },
     };
