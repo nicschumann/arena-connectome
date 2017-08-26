@@ -1,4 +1,9 @@
 @import "parameters.scss";
+@import "reset.scss";
+
+html {
+    box-sizing: border-box;
+}
 
 body {
     background-color: $body-bg-color;
