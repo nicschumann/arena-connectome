@@ -50,10 +50,13 @@ function DynamicGraphRenderer( config, d3 ) {
 
     function zoomed( d ) {
 
-        // d3.event.transform.x -= config.width / 2;
-        // d3.event.transform.y -= config.height / 2;
+        console.log( d3.event.transform );
 
-        g_root.attr('transform', d3.event.transform );
+        g_root.attr(
+            'transform',
+            'translate(' + (config.width / 2 + d3.event.transform.x) + ',' + (config.height / 2 + d3.event.transform.y) + ')' +
+            'scale(' + d3.event.transform.k + ')'
+        );
     }
 
     /**
