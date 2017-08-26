@@ -25,6 +25,8 @@ function SearchFieldRenderer( config, d3 ) {
 
         if ( !initialized ) {
 
+            config.search_field.node().focus();
+
             config.search_field.on('change', config.hooks.on_input_change )
 
             initialized = true;
