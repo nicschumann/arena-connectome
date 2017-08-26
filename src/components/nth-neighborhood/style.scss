@@ -1,12 +1,93 @@
 @import './parameters.scss';
 
+body {
+    position: relative;
+    font-size: 16px;
+    font-family: 'arial', helvetica, sans-serif;
+}
+
+svg {
+    width:100%;
+    height: 100%;
+}
+
+defs {
+    marker#contained {
+        stroke: blue;
+        stroke-width: 2px;
+    }
+
+    marker#inset {
+        stroke: red;
+        stroke-width: 2px;
+    }
+}
+
+.channel-search {
+    position: absolute;
+    width:100%;
+
+    font-size: 1.5em;
+    background-color: white;
+    opacity: .75;
+
+    top:0px;
+    left:0px;
+
+    border:0;
+    padding:1em;
+
+    outline: none;
+}
+
+.results-field {
+    position: absolute;
+    width:25%;
+
+    max-height: calc( 95% - 5em );
+
+    top:calc( 2.5% + 5em );
+    left:2.5%;
+
+    overflow-y: scroll;
+
+    cursor: pointer;
+}
+
 .graph {
+
     g.nodes {
 
         .node {
-            fill: $node-base-color;
-            z-index: 1000;
+            font-size: 6px;
+            cursor: pointer;
+
+            circle {
+                fill: $node-base-color;
+                z-index: 1000;
+                stroke-width:2px;
+
+                &.closed-channel {
+                    stroke: $closed-channel-fill;
+                }
+
+                &.open-channel {
+                    stroke: $open-channel-fill;
+                }
+            }
+
+            .author {
+                font-size: 4.5px;
+                color:green;
+            }
+
+            &.clicked {
+                font-weight: bold;
+            }
+
         }
+
+
 
     }
 
@@ -15,6 +96,23 @@
         .edge {
             stroke: $edge-base-color;
             z-index: 500;
+            fill: transparent;
+
+            .block-connected {
+                stroke-dasharray:2,2;
+            }
+
+            .inset {
+                stroke-dasharray:2,2;
+                stroke:red;
+                marker-end: url(#inset);
+            }
+
+            .contained {
+                stroke: blue;
+                marker-end: url(#contained);
+            }
+
         }
 
     }

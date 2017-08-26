@@ -1,4 +1,11 @@
 @import '../../parameters.scss';
 
-$node-base-color: gray;
+$node-base-color: lightgray;
 $edge-base-color: lightgray;
+
+$closed-channel-fill: #4b3d67; // are.na closed channel color.
+$open-channel-fill: #17ac10; // are.na open channel color.
+$search-field-height: 5em;
+
+$light: #aaaaaa;
+$dark: #252525;
