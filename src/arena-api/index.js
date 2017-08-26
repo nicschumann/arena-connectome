@@ -33,6 +33,12 @@ var arena = function( config ) {
             return makeRequest( 'blocks', slug || '', action || '');
 
         },
+
+        search: function( type, term ) {
+
+            return makeRequest( 'search', [type || "", '?q=' + term ].join(''), '' );
+
+        }
     };
 };
 
