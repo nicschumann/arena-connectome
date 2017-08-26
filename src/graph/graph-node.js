@@ -26,7 +26,7 @@ function GraphNode( channel ) {
  */
 GraphNode.prototype.equals = function( other ) {
 
-    return (other instanceof GraphNode) && other.slug === this.slug && other.id === this.id;
+    return (other instanceof GraphNode) && other.slug === this.slug;
 
 };
 

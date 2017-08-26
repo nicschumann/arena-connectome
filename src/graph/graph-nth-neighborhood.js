@@ -1,4 +1,4 @@
-import { get_block_connections, get_containing_channels } from './graph-get-connections.js';
+import { get_block_connections, get_inset_channels, get_containing_channels } from './graph-get-connections.js';
 import parallel from 'async/parallel';
 import map from 'async/map';
 
@@ -19,7 +19,7 @@ function build_n_neighborhood( root, n, api, hooks) {
 
         console.log( '[METHOD ENTRY] iteration %d of %d', k, n );
 
-        if ( typeof hooks.neighborhood === "function" ) { hooks.neighborhood( k_less_1_neighborhood ); }
+        if ( typeof hooks.neighborhood === "function" ) { hooks.neighborhood( null, k_less_1_neighborhood ); }
 
         if ( k === n + 1 ) {
 
@@ -52,8 +52,6 @@ function build_n_neighborhood( root, n, api, hooks) {
      */
     function neighborhood_1_of_1( local_root, next ) {
 
-        console.log('neighborhood_1_of_1, with local_root=%s', local_root.slug );
-
         if ( encountered_nodes.has( local_root ) ) { next( null, EmptyGraph() ); }
 
         parallel({
@@ -63,21 +61,23 @@ function build_n_neighborhood( root, n, api, hooks) {
             /**
              * Removing get_inset_channels, because:
              */
-            //inset_channels: get_inset_channels( local_root, api ),
-
-            containing_channels: get_containing_channels( local_root, api )
+            inset_channels: get_inset_channels( local_root, api ),
+            //
+            //containing_channels: get_containing_channels( local_root, api )
 
         }, function( err, results ) {
-
-            console.log( results )
 
             if ( err ) next( err );
 
             encountered_nodes.add( local_root );
 
-            var partial_boundary = results.block_connections.union( results.containing_channels )
+            var block_connections = results.block_connections || EmptyGraph();
+            var inset_connections = results.inset_channels || EmptyGraph();
+            var containing_connections = results.containing_channels || EmptyGraph();
 
-            if ( typeof hooks.partial_boundary === "function" ) { hooks.partial_boundary( partial_boundary ); }
+            var partial_boundary = block_connections.union( containing_connections.union( inset_connections ) );
+
+            if ( typeof hooks.partial_boundary === "function" ) { hooks.partial_boundary( err, partial_boundary ); }
 
             next( null, partial_boundary );
         });
@@ -100,7 +100,7 @@ function build_n_neighborhood( root, n, api, hooks) {
 
                 var total_boundary = results.reduce( function( a,b ) { return a.union( b ) }, EmptyGraph() )
 
-                if ( typeof hooks.boundary === "function" ) { hooks.boundary( total_boundary ); }
+                if ( typeof hooks.boundary === "function" ) { hooks.boundary( err, total_boundary ); }
 
                 next( null, total_boundary );
 

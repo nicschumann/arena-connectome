@@ -5,7 +5,7 @@ import map from 'async/map';
 import FastSet from 'collections/fast-set';
 
 import { get_channel, get_channel_connections, get_channel_channels } from './graph-api-requests.js';
-import { GraphBlockConnectedEdge, GraphInsetEdge, GraphContainedEdge } from './graph-edge.js';
+import { GraphBlockConnectedEdge, GraphInsetEdge } from './graph-edge.js';
 import { EdgeSet } from './graph-edge-set.js';
 import { NodeSet } from './graph-node-set.js';
 import { GraphLabel } from './graph-label.js';
@@ -14,7 +14,7 @@ import { Graph } from './graph.js';
 
 var contents_equals = function( a, b ) { return a.id === b.id; };
 var contents_hash = function( a, b ) { return a.id+""; };
-
+var null_filter = function( a ) { return a.edges.length > 0; }
 
 /**
  * Given a specific node representing a channel, `get_block_connections` returns all channels that are
@@ -67,8 +67,8 @@ var get_block_connections = function( local_root, api ) {
 
                         callback( null,
                             new Graph(
-                                new EdgeSet( results.map( function( x ) { return x.edges; }).flatten() ),
-                                new NodeSet( results.map( function( x ) { return x.node; }).concat( [ local_root ] ) )
+                                new EdgeSet( results.filter( null_filter ).map( function( x ) { return x.edges; }).flatten() ),
+                                new NodeSet( results.filter( null_filter ).map( function( x ) { return x.node; }).concat( [ local_root ] ) )
                             )
                         );
 
@@ -124,7 +124,12 @@ var get_inset_channels = function( local_root, api ) {
 };
 
 /**
+ * Given a specific node and an api reference, `get_continaing_channels` produces a new
+ * graph which contains the local root and all channels into which the local_root is inset.
  *
+ * @param GraphNode local_root GraphNode representing the Are.na channel around which to get channels.
+ * @param api an Are.na api reference.
+ * @return (((err, Graph) => void) => void) an asynchronous callback.
  */
 var get_containing_channels = function( local_root, api ) {
 
@@ -140,7 +145,7 @@ var get_containing_channels = function( local_root, api ) {
 
                                 if ( err ) { done( err ); }
 
-                                done( null, { edge: new GraphContainedEdge( local_root, node ), node: node });
+                                done( null, { edge: new GraphInsetEdge( local_root, node ), node: node });
 
                             });
                         },

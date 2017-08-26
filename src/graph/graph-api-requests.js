@@ -15,20 +15,13 @@ var get_api_resource = function( slug, modifier, postprocessor, api, config) {
     return function( next ) {
         setTimeout( function() {
 
-            console.log('timeout firing');
-
             api .channel( slug, modifier )
                 .then( function( result ) {
-
-
-                        console.log( result );
 
                         next( null, postprocessor( result.data ) );
 
                 })
                 .catch( function( error ) {
-
-                        console.log( error );
 
                         next( error );
 

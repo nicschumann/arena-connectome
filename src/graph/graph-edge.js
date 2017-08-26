@@ -31,7 +31,20 @@ function GraphEdge( source, target, type, label ) {
 }
 
 GraphEdge.prototype.equals = function( other ) {
-    return (other instanceof GraphEdge) && other.source === this.source && other.target === this.target && this.type === other.type && ( typeof this.label !== "undefined") ? this.label.equals( other.label ) : true;
+
+    var graph_edge = other instanceof GraphEdge;
+    var matching_type = this.type === other.type;
+
+    var source_labels_match = this.source.equals( other.source );
+    var target_labels_match = this.target.equals( other.target );
+    var source_matches_target = this.source.equals( other.target );
+    var target_matches_source = this.target.equals( other.source );
+
+    var is_matching_block_connection = (this.type === "block-connected") && ((source_labels_match && target_labels_match) || ( source_matches_target && target_matches_source ));
+    var is_matching_contained_connection = (this.type === "contained") && source_labels_match && target_labels_match;
+    var is_matching_inset_connection = (this.type === "inset") && source_labels_match && target_labels_match;
+
+    return graph_edge && matching_type && ( is_matching_block_connection || is_matching_inset_connection || is_matching_contained_connection );
 };
 
 /**
@@ -42,6 +55,22 @@ GraphEdge.prototype.equals = function( other ) {
  *
  * @return String hash
  */
-GraphEdge.prototype.hash = function( ) { return ((this.type === "block-connected") ? this.label.id : this.type )+':'+this.source.slug+'->'+this.target.slug; };
+GraphEdge.prototype.hash = function( ) {
+
+
+    if ( this.type === "block-connected" ) {
+        return this.label.id + ':' + this.source_target_hash();
+    } else {
+        return this.type + ':' + this.source + '->' + this.target;
+    }
+};
+
+/**
+ *
+ * @return String hash for unordered unlabelled edges.
+ */
+GraphEdge.prototype.source_target_hash = function() {
+    return (( this.source.slug < this.target.slug ) ? this.source.slug : this.target.slug ) + '--' + ((this.source.slug > this.target.slug) ? this.source.slug : this.target.slug);
+}
 
 export { GraphBlockConnectedEdge, GraphInsetEdge, GraphContainedEdge };
