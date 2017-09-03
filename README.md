@@ -22,7 +22,7 @@ Our primary goal is to provide interesting tools for visualizing patterns of con
 
 1. A channel **A** is said to *contain* a channel **B** if **B** appears as content in **A**'s content list. We represent the fact that **A** contains **B** by drawing a directed edge from the node representing **B** to the node representing **A**.
 
-2. A channel **A** is said to be *inset into* a channel **B** if **A** appears as content in **B**'s content list. We represent the fact that **A** is inset into **B** by drawing a directed edge from the node representing **A** to the node representing **B**. 
+2. A channel **A** is said to be *inset into* a channel **B** if **A** appears as content in **B**'s content list. We represent the fact that **A** is inset into **B** by drawing a directed edge from the node representing **A** to the node representing **B**.
 
 3. Notice that **A** is inset into **B** exactly when **B** contains **A**.
 
@@ -34,7 +34,7 @@ Now that our notions of connectedness are defined, We define an *n-neighborhood*
 
 1. The *0-neighborhood* around **A** is simply the channel **A** itself.
 
-2. The *0-boundary* around **A** is the empty set: *Ø*.
+2. The *0-boundary* around **A** is **A** itself, so that *0-neighborhood* = *0-boundary*.
 
 3. The *1-neighborhood* around **A** is the set of all channels that *contain* **A**, together with all channels *inset into* **A**, together with all channels *block-connected* to **A**, along with all respective edges witnessing these facts.
 
